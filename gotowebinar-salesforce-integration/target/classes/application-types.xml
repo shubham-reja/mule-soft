@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="abc" format="json">
+      <types:shape format="weave" example="examples/exp.json"><![CDATA[%dw 2.0
+
+type abc = Array<{|  registrantKey: String,   attendeeId: String,   firstName: String,   lastName: String,   status: String,   email: String,   registrationDate: String,   joinUrl: String,   timeZone: String,   "type": String|}> {"example": "[{\\\"registrantKey\\\":\\\"7587714754211231245\\\",\\\"attendeeId\\\":\\\"283852623\\\",\\\"firstName\\\":\\\"Shubham\\\",\\\"lastName\\\":\\\"Reja\\\",\\\"status\\\":\\\"APPROVED\\\",\\\"email\\\":\\\"shubhreja96@gmail.com\\\",\\\"registrationDate\\\":\\\"2020-01-08T11:42:46Z\\\",\\\"joinUrl\\\":\\\"https:\\/\\/global.gotowebinar.com\\/join\\/4596680287821770764\\/283852623\\\",\\\"timeZone\\\":\\\"Asia\\/Kolkata\\\",\\\"type\\\":\\\"REGULAR\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#b0b2af04-0570-4bcb-95a1-ecde1b462e1e">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="abc"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

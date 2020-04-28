@@ -1,0 +1,14 @@
+[
+    {
+        "registrantKey": "7587714754211231245",
+        "attendeeId": "283852623",
+        "firstName": "Shubham",
+        "lastName": "Reja",
+        "status": "APPROVED",
+        "email": "shubhreja96@gmail.com",
+        "registrationDate": "2020-01-08T11:42:46Z",
+        "joinUrl": "https://global.gotowebinar.com/join/4596680287821770764/283852623",
+        "timeZone": "Asia/Kolkata",
+        "type": "REGULAR"
+    }
+]

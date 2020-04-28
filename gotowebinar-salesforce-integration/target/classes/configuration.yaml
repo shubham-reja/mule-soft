@@ -1,0 +1,19 @@
+main:
+  port : "8081"
+
+goto:
+  host : "api.getgo.com"
+  port : "443"
+ss:
+  organizerKey :"XXXXXXXXXXXXXXX"
+  webinarKey :"XXXXXXXXXXXXXX"	
+https:
+ port: "8082"
+consumer:
+  id: "XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  secret: "XXXXXXXXXXXXX"
+gtw:
+  auth:
+    url: "https://api.getgo.com/oauth/v2/authorize"
+  token:
+    url: "https://api.getgo.com/oauth/v2/token"

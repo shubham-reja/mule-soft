@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:oauth="http://www.mulesoft.org/schema/mule/oauth" xmlns:salesforce-api="http://www.mulesoft.org/schema/mule/salesforce-api" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/salesforce-api http://www.mulesoft.org/schema/mule/salesforce-api/current/mule-salesforce-api.xsd
+http://www.mulesoft.org/schema/mule/oauth http://www.mulesoft.org/schema/mule/oauth/current/mule-oauth.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<configuration defaultResponseTimeout="30000" />
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a3645d88-2a63-4039-9a25-fff89139e97c" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="281452ac-14ff-4b88-874e-834b9b70be59" basePath="/G2W/rest/organizers/8507901533053197836/webinars/7954495340671150093/registrants" >
+		<http:request-connection protocol="HTTPS" host="${goto.host}" port="${goto.port}" >
+			<http:authentication >
+				<oauth:authorization-code-grant-type clientId="${consumer.id}" clientSecret="${consumer.secret}" authorizationUrl="${gtw.auth.url}" tokenUrl="${gtw.token.url}" localAuthorizationUrl="http://0.0.0.0:${main.port}/local-auth" externalCallbackUrl="http://goto-webinar.us-e2.cloudhub.io/callback" localCallbackConfigPath="/callback" localCallbackConfig="HTTP_Listener_config" encodeClientCredentialsInBody="false">
+					<oauth:token-manager objectStore="Object_store"/>
+				</oauth:authorization-code-grant-type>
+			</http:authentication>
+		</http:request-connection>
+	</http:request-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="4b913724-19d6-4f59-b7f8-2563df1cb44a" file="configuration.yaml" />
+	<salesforce-api:config name="Salesforce_API_Config" doc:name="Salesforce API Config" doc:id="337280cb-5586-4ea1-9e8e-7c5b39ffba95" property_host="mti-salesforce-api.us-e1.cloudhub.io" property_port="443" property_protocol="HTTPS" property_basePath="/api" >
+		<salesforce-api:connection />
+	</salesforce-api:config>
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="1b5f7964-2f66-498d-bcfc-c565196c28b9" maxEntries="100" entryTtl="30" entryTtlUnit="DAYS" expirationInterval="30" />
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="87ec8813-83bd-4ba1-bb4e-38ce7aab341a" >
+		<salesforce:cached-basic-connection username="shubham@algoworks.com" password="Password01" securityToken="RSwAE9IrRqa4y0VMU1QB4X3t" />
+	</salesforce:sfdc-config>
+	<flow name="webinarFlow" doc:id="d0f47efa-cc9e-44dd-b344-7df18d430720" >
+		<http:listener doc:name="Listener" doc:id="468d0663-4ced-4b57-96a9-6f891cec0309" config-ref="HTTP_Listener_config" path="/goto"/>
+		<http:request method="GET" doc:name="Request" doc:id="76a238ee-4c37-4670-be4e-6ce99d8be6c5" config-ref="HTTP_Request_configuration" path="/">
+		</http:request>
+		<foreach doc:name="For Each" doc:id="a92ba9ae-55b2-401d-b5de-31703d65431e" collection="payload">
+			<salesforce:upsert type="Account" doc:name="Upsert" doc:id="d965eec1-d2c4-48b5-9a3f-1dfe695fcbe1" config-ref="Salesforce_Config" externalIdFieldName='Webinar_Registrant_Email__c'>
+				<salesforce:records ><![CDATA[#[output application/java
+---
+ [{
+	Name: (payload.firstName ++ payload.lastName),
+	Webinar_Registant_Key__c: payload.registrantKey,
+	Webinar_AttendeeId__c: payload.attendeeId,
+	Webinar_Registration_Date__c: payload.registrationDate as DateTime,
+	Webinar_Join_Url__c: payload.joinUrl,
+	Webinar_Time_Zone__c: payload.timeZone,
+	Webinar_Status__c: payload.status,
+	Webinar_Registrant_Email__c: payload.email
+}]]]]></salesforce:records>
+			</salesforce:upsert>
+			<logger level="INFO" doc:name="Logger" doc:id="06097c51-c58c-4ba6-b0c6-dc877314e938" message="#[payload]" />
+		</foreach>
+	</flow>
+</mule>

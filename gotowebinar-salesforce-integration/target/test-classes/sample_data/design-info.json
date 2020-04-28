@@ -1,0 +1,16 @@
+{
+  "sampleData": {
+    "690c7d5b-3c73-4e13-9093-8131f05917e5": {
+      "payload": "sample_data/list_json.json"
+    },
+    "1fd90b36-f00a-45fb-80ee-0e413103304f": {
+      "payload": "sample_data/unknown.dwl"
+    },
+    "47c77e8a-590e-4a83-85fb-eb7aacaa91ec": {
+      "payload": "sample_data/list_json_1.json"
+    },
+    "3845e0b7-a232-4105-a230-314d1b48fdc6": {
+      "payload": "sample_data/list_json_2.json"
+    }
+  }
+}
